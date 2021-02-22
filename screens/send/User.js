@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
-const UserScreen = ({navigation}) => {
+const UserScreen = ({navigation,route}) => {
+  console.log(route.params)
   return (
     <View style={styles.header}>
       <Text style={styles.text}>User</Text>
