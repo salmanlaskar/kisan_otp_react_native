@@ -1,0 +1,3 @@
+export const CONTACT_LOADING = "CONTACT_LOADING";
+export const SET_CONTACT = "SET_CONTACT";
+export const CONTACT_ERROR = "CONTACT_ERROR";

@@ -9,164 +9,206 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import axios from '../../utils/axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import _ from "lodash";
+import Spinner from 'react-native-loading-spinner-overlay';
+
 const window = Dimensions.get('window');
 const contactlist = [
   {
     index: 0,
-    name: 'Carolyn Colon',
+    firstName: 'Carolyn Colon',
+    phoneNumber:"+919732101010"
   },
   {
     index: 1,
-    name: 'Compton Luna',
+    firstName: 'Compton Luna',
+    phoneNumber:"+918378250534"
   },
   {
     index: 2,
-    name: 'Michelle Vasquez',
+    firstName: 'Michelle Vasquez',
+    phoneNumber:"+918918250534"
   },
   {
     index: 3,
-    name: 'Slater Holland',
+    firstName: 'Slater Holland',
+    phoneNumber:"+918918250534"
   },
   {
     index: 4,
-    name: 'Parrish Bowman',
+    firstName: 'Parrish Bowman',
+    phoneNumber:"+918918250534"
   },
   {
     index: 5,
-    name: 'Enid Fowler',
+    firstName: 'Enid Fowler',
+    phoneNumber:"+918918250534"
   },
   {
     index: 6,
-    name: 'Twila Price',
+    firstName: 'Twila Price',
+    phoneNumber:"+918918250534"
   },
   {
     index: 7,
-    name: 'Hawkins Mills',
+    firstName: 'Hawkins Mills',
+    phoneNumber:"+918918250534"
   },
   {
     index: 8,
-    name: 'Eileen Roth',
+    firstName: 'Eileen Roth',
+    phoneNumber:"+918918250534"
   },
   {
     index: 9,
-    name: 'Eve Mullen',
+    firstName: 'Eve Mullen',
+    phoneNumber:"+918918250534"
   },
   {
     index: 10,
-    name: 'Bryant Olsen',
+    firstName: 'Bryant Olsen',
+    phoneNumber:"+918918250534"
   },
   {
     index: 11,
-    name: 'Ramos Bauer',
+    firstName: 'Ramos Bauer',
+    phoneNumber:"+918918250534"
   },
   {
     index: 12,
-    name: 'Beach Crane',
+    firstName: 'Beach Crane',
+    phoneNumber:"+918918250534"
   },
   {
     index: 13,
-    name: 'Cathryn Pearson',
+    firstName: 'Cathryn Pearson',
+    phoneNumber:"+918918250534"
   },
   {
     index: 14,
-    name: 'Kent Haney',
+    firstName: 'Kent Haney',
+    phoneNumber:"+918918250534"
   },
   {
     index: 15,
-    name: 'Sawyer Kramer',
+    firstName: 'Sawyer Kramer',
+    phoneNumber:"+918918250534"
   },
   {
     index: 16,
-    name: 'Mitchell Sanchez',
+    firstName: 'Mitchell Sanchez',
+    phoneNumber:"+918918250534"
   },
   {
     index: 17,
-    name: 'Mcconnell Burns',
+    firstName: 'Mcconnell Burns',
+    phoneNumber:"+918918250534"
   },
   {
     index: 18,
-    name: 'Marci Hickman',
+    firstName: 'Marci Hickman',
+    phoneNumber:"+918918250534"
   },
   {
     index: 19,
-    name: 'Lenora Ellis',
+    firstName: 'Lenora Ellis',
+    phoneNumber:"+918918250534"
   },
   {
     index: 20,
-    name: 'Hahn Hoffman',
+    firstName: 'Hahn Hoffman',
+    phoneNumber:"+918918250534"
   },
   {
     index: 21,
-    name: 'Lindsey Parks',
+    firstName: 'Lindsey Parks',
+    phoneNumber:"+918918250534"
   },
   {
     index: 22,
-    name: 'Garner Fitzgerald',
+    firstName: 'Garner Fitzgerald',
+    phoneNumber:"+918918250534"
   },
   {
     index: 23,
-    name: 'Chrystal Watson',
+    firstName: 'Chrystal Watson',
+    phoneNumber:"+918918250534"
   },
   {
     index: 24,
-    name: 'Effie Mcknight',
+    firstName: 'Effie Mcknight',
+    phoneNumber:"+918918250534"
   },
   {
     index: 25,
-    name: 'Queen Molina',
+    firstName: 'Queen Molina',
+    phoneNumber:"+918918250534"
   },
   {
     index: 26,
-    name: 'Weber Howe',
+    firstName: 'Weber Howe',
+    phoneNumber:"+918918250534"
   },
   {
     index: 27,
-    name: 'Berry Watkins',
+    firstName: 'Berry Watkins',
+    phoneNumber:"+918918250534"
   },
   {
     index: 28,
-    name: 'Leonard Lester',
+    firstName: 'Leonard Lester',
+    phoneNumber:"+918918250534"
   },
   {
     index: 29,
-    name: 'Mcneil Newman',
+    firstName: 'Mcneil Newman',
+    phoneNumber:"+918918250534"
   },
   {
     index: 30,
-    name: 'Whitney Mullins',
+    firstName: 'Whitney Mullins',
+    phoneNumber:"+918918250534"
   },
   {
     index: 31,
-    name: 'Shannon Marshall',
+    firstName: 'Shannon Marshall',
+    phoneNumber:"+918918250534"
   },
   {
     index: 32,
-    name: 'Boone Mcgee',
+    firstName: 'Boone Mcgee',
+    phoneNumber:"+918918250534"
   },
   {
     index: 33,
-    name: 'Denise Booth',
+    firstName: 'Denise Booth',
+    phoneNumber:"+918918250534"
   },
   {
     index: 34,
-    name: 'Audrey Milli',
+    firstName: 'Audrey Milli',
+    phoneNumber:"+918918250534"
   },
   {
     index: 35,
-    name: 'Austin Jack',
+    firstName: 'Austin Jack',
+    phoneNumber:"+918918250534"
   },
   {
     index: 36,
-    name: 'Amda Hells',
+    firstName: 'Amda Hells',
+    phoneNumber:"+918918250534"
   },
 ];
 
 const ContactScreen = ({navigation}) => {
   const [contacts, setContacts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const[loading,setLoading]=useState(false);
   const [flag, setFlag] = useState(false);
+  const[search,setSearch]=useState('');
 
   const [width, setWidth] = useState(window.width);
   const [height, setHeight] = useState(window.height);
@@ -184,10 +226,10 @@ const ContactScreen = ({navigation}) => {
       };
 
       let currContacts = list.filter((item) => {
-        return item.name[0].toUpperCase() === currChar;
+        return item.firstName[0].toUpperCase() === currChar;
       });
       if (currContacts.length > 0) {
-        currContacts.sort((a, b) => a.name.localeCompare(b.name));
+        currContacts.sort((a, b) => a.firstName.localeCompare(b.firstName));
         obj.data = currContacts;
         contactsArr.push(obj);
       }
@@ -195,7 +237,17 @@ const ContactScreen = ({navigation}) => {
     return contactsArr;
   };
   useEffect(() => {
-    setContacts(getData(contactlist));
+    setLoading(true);
+    axios({url: '/product', method: 'GET'})
+    .then((res) => res.data)
+    .then((data) => {
+      console.log(data);
+      setLoading(false);
+      setContacts(getData(contactlist));
+    })
+    .catch((err) => {
+      setLoading(false);
+    });
     setRefreshing(false);
     Dimensions.addEventListener('change', onChange);
     return () => {
@@ -206,17 +258,21 @@ const ContactScreen = ({navigation}) => {
     const formattedQuery = text.toLowerCase();
     var temp = [];
     _.filter(contactlist, (item) => {
-      var n = item.name.toLowerCase();
-      var m = item.name.toLowerCase();
+      var n = item.firstName.toLowerCase();
+      var m = item.phoneNumber.toLowerCase();
       if (n.includes(formattedQuery) || m.includes(formattedQuery)) {
         temp.push(item);
       }
     });
-    //logger("set the follower list according to search results", "info");
-    setContacts(getData(temp));
+        setContacts(getData(temp));
   };
   return (
-    <View style={[styles.container]}>
+    <View style={styles.container}>
+      <Spinner
+            visible={loading}
+            textContent={'loading...'}
+            textStyle={{ color: '#FFF',fontSize:12,fontFamily:"Poppins-Medium"}}
+          />
       <View
         style={[
           styles.searchInput,
@@ -236,7 +292,8 @@ const ContactScreen = ({navigation}) => {
           style={[styles.search, {width: width * 0.7}]}
           placeholder={`Search in ${contactlist.length} Contact(s)`}
           placeholderTextColor="#aaaaaa"
-          onChangeText={(text) => handleSearch(text)}
+          onChangeText={(text) => {setSearch(text);handleSearch(text)}}
+          value={search}
         />
       </View>
       <SectionList
@@ -247,7 +304,8 @@ const ContactScreen = ({navigation}) => {
             onPress={() => {
               navigation.navigate('User',item);
             }}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.name}>{item.firstName}</Text>
+            {search?<Text style={[styles.name,{fontSize:12}]}>{item.phoneNumber}</Text>:null}
           </TouchableOpacity>
         )}
         renderSectionHeader={({section}) => (
@@ -267,20 +325,19 @@ const ContactScreen = ({navigation}) => {
           />
         }
       />
-      <Ionicons
+      {/* <Ionicons
         name="md-add-circle-sharp"
         color="#2a2e43"
         size={42}
         style={{position: 'absolute', bottom: 20, right: 20}}
-      />
+      /> */}
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignSelf: 'stretch',
+    backgroundColor: '#ffffff',
     paddingVertical: 14,
   },
   searchInput: {
@@ -324,4 +381,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
 export default ContactScreen;
