@@ -68,7 +68,7 @@ const MessageScreen = ({message,getMessage}) => {
       <FlatList
         data={message.data}
         renderItem={({item, index}) => renderPost(item, index)}
-        keyExtractor={(item) => item.receivedMessageTimeStamp.toString()}
+        keyExtractor={(item) => item._id.toString()}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -88,6 +88,7 @@ const MessageScreen = ({message,getMessage}) => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#ffffff',
+    minHeight:'100%'
   },
   date: {
     fontSize: 20,

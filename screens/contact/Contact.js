@@ -15,198 +15,10 @@ import _ from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const window = Dimensions.get('window');
-const contactlist = [
-  {
-    index: 0,
-    firstName: 'Carolyn',
-    lastName: 'Colon',
-    phoneNumber: '+919732101010',
-  },
-  {
-    index: 1,
-    firstName: 'Compton',
-    lastName: 'Luna',
-    phoneNumber: '+918378250534',
-  },
-  {
-    index: 2,
-    firstName: 'Michelle Vasquez',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 3,
-    firstName: 'Slater Holland',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 4,
-    firstName: 'Parrish Bowman',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 5,
-    firstName: 'Enid Fowler',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 6,
-    firstName: 'Twila Price',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 7,
-    firstName: 'Hawkins Mills',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 8,
-    firstName: 'Eileen Roth',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 9,
-    firstName: 'Eve Mullen',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 10,
-    firstName: 'Bryant Olsen',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 11,
-    firstName: 'Ramos Bauer',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 12,
-    firstName: 'Beach Crane',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 13,
-    firstName: 'Cathryn Pearson',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 14,
-    firstName: 'Kent Haney',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 15,
-    firstName: 'Sawyer Kramer',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 16,
-    firstName: 'Mitchell Sanchez',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 17,
-    firstName: 'Mcconnell Burns',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 18,
-    firstName: 'Marci Hickman',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 19,
-    firstName: 'Lenora Ellis',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 20,
-    firstName: 'Hahn Hoffman',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 21,
-    firstName: 'Lindsey Parks',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 22,
-    firstName: 'Garner Fitzgerald',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 23,
-    firstName: 'Chrystal Watson',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 24,
-    firstName: 'Effie Mcknight',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 25,
-    firstName: 'Queen Molina',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 26,
-    firstName: 'Weber Howe',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 27,
-    firstName: 'Berry Watkins',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 28,
-    firstName: 'Leonard Lester',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 29,
-    firstName: 'Mcneil Newman',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 30,
-    firstName: 'Whitney Mullins',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 31,
-    firstName: 'Shannon Marshall',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 32,
-    firstName: 'Boone Mcgee',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 33,
-    firstName: 'Denise Booth',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 34,
-    firstName: 'Audrey Milli',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 35,
-    firstName: 'Austin Jack',
-    phoneNumber: '+918918250534',
-  },
-  {
-    index: 36,
-    firstName: 'Amda Hells',
-    phoneNumber: '+918918250534',
-  },
-];
 
 const ContactScreen = ({navigation}) => {
   const [contacts, setContacts] = useState([]);
+  const [contactlist,setcontactlist]=useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [flag, setFlag] = useState(false);
@@ -241,13 +53,15 @@ const ContactScreen = ({navigation}) => {
   useEffect(() => {
     setLoading(true);
     setRefreshing(false);
-    axios({url: '/product', method: 'GET'})
+    axios({url: '/user', method: 'GET'})
       .then((res) => res.data)
       .then((data) => {
         setLoading(false);
-        setContacts(getData(contactlist));
+        setcontactlist(data)
+        setContacts(getData(data));
       })
       .catch((err) => {
+        console.log(err)
         setLoading(false);
       });
     Dimensions.addEventListener('change', onChange);
@@ -322,7 +136,7 @@ const ContactScreen = ({navigation}) => {
             <Text style={{fontFamily: 'Poppins-Medium'}}>{section.title}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.index}
+        keyExtractor={(item) => item._id}
         refreshControl={
           <RefreshControl
             colors={['#9Bd35A', '#689F38']}

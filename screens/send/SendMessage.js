@@ -8,16 +8,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from '../../utils/axios';
+import {getMessage} from '../../redux';
+import store from '../../redux/store';
 const SendMessage = ({navigation, route}) => {
   const [data, setData] = useState(route.params);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const RandomOtp = () => {
     return random(100000, 999999);
   };
   const [otp, setOtp] = useState(RandomOtp());
   const Send = () => {
+    setLoading(true);
     axios({
       url: '/message',
       method: 'POST',
@@ -25,22 +30,31 @@ const SendMessage = ({navigation, route}) => {
     })
       .then((res) => res.data)
       .then((data) => {
-        return ToastAndroid.showWithGravity(
+        setLoading(false);
+        ToastAndroid.showWithGravity(
           'Message successfully send',
-          ToastAndroid.SHORT,
+          ToastAndroid.LONG,
           ToastAndroid.BOTTOM,
         );
+        store.dispatch(getMessage());
+        navigation.navigate('Messages');
       })
       .catch((e) => {
+        setLoading(false);
         return ToastAndroid.showWithGravity(
-          'some error occoured',
-          ToastAndroid.SHORT,
+          e.response.data.message||'some error occoured',
+          ToastAndroid.LONG,
           ToastAndroid.BOTTOM,
         );
       });
   };
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        textContent={'sending...'}
+        textStyle={{color: '#FFF', fontSize: 12, fontFamily: 'Poppins-Medium'}}
+      />
       <TouchableOpacity
         style={{width: '34%', height: 40, justifyContent: 'center'}}
         onPress={() => {
