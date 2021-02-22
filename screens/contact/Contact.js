@@ -123,7 +123,7 @@ const ContactScreen = ({navigation}) => {
             onPress={() => {
               navigation.navigate('User', item);
             }}>
-            <Text style={styles.name}>{item.firstName}</Text>
+            <Text style={styles.name}>{item.firstName+" "+item.lastName}</Text>
             {search ? (
               <Text style={[styles.name, {fontSize: 12}]}>
                 {item.phoneNumber}
