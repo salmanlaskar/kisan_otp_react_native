@@ -1,4 +1,4 @@
-import { SET_CONTACT,CONTACT_ERROR,CONTACT_LOADING } from "./contactTypes";
+import { SET_MESSAGE,MESSAGE_ERROR,MESSAGE_LOADING } from "./messageTypes";
 
 const initialState = {
   data:[],
@@ -6,21 +6,21 @@ const initialState = {
   loading: false
 };
 
-const CONTACTReducer=(state = initialState, action)=>{
+const MessageReducer=(state = initialState, action)=>{
   switch (action.type) {
-    case SET_CONTACT:
+    case SET_MESSAGE:
       return {
         ...state,
         data: action.payload,
         loading: false,
         error:{}
       };
-    case CONTACT_LOADING:
+    case MESSAGE_LOADING:
       return {
         ...state,
         loading: true
       };
-    case CONTACT_ERROR:
+    case MESSAGE_ERROR:
       return {
           ...state,
           loading: false,
@@ -30,4 +30,4 @@ const CONTACTReducer=(state = initialState, action)=>{
       return state;
   }
 }
-export default CONTACTReducer;
+export default MessageReducer;

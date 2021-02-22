@@ -1,1 +1,1 @@
-export * from './contact/contactActions';
+export * from './message/messageActions';

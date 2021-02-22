@@ -5,6 +5,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import ContactScreen from '../screens/contact/Contact';
 import MessageScreen from '../screens/message/Message';
 import UserScreen from '../screens/send/User';
+import SendMessage from '../screens/send/SendMessage'
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
@@ -38,6 +39,7 @@ export default function Navigation() {
         initialRouteName="Tab">
         <Stack.Screen name="Tab" component={TabScreen} />
         <Stack.Screen name="User" component={UserScreen} />
+        <Stack.Screen name="Send" component={SendMessage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
