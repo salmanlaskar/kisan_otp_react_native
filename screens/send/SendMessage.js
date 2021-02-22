@@ -1,5 +1,5 @@
 import {random} from 'lodash';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,20 +7,41 @@ import {
   ToastAndroid,
   TouchableOpacity,
   View,
+  Dimensions,
+  ScrollView,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import axios from '../../utils/axios';
+import axios from '../../utils/axios'; //for server side api call
 import {getMessage} from '../../redux';
-import store from '../../redux/store';
+const window = Dimensions.get('window');
+import store from '../../redux/store'; //to dispatch a redux action directly
+
 const SendMessage = ({navigation, route}) => {
-  const [data, setData] = useState(route.params);
-  const [message, setMessage] = useState('');
+  const [data, setData] = useState(route.params); //user data passed from previous screen
+  const [message, setMessage] = useState(''); //state to manage addition text if user want to send along with
   const [loading, setLoading] = useState(false);
+  const [width, setWidth] = useState(window.width);
+  const [height, setHeight] = useState(window.height);
+
+  const onChange = ({window}) => {
+    setHeight(window.height);
+    setWidth(window.width);
+  };
+  useEffect(() => {
+    //manage screen rotation listner
+    Dimensions.addEventListener('change', onChange);
+    return () => {
+      Dimensions.removeEventListener('change', onChange);
+    };
+  }, []);
+  //Generates a random number between 100000 to 999999 both including
   const RandomOtp = () => {
     return random(100000, 999999);
   };
-  const [otp, setOtp] = useState(RandomOtp());
+  const [otp, setOtp] = useState(RandomOtp()); //state for managing otp value
+
+  //Function for http request to server for sending message to perticular number
   const Send = () => {
     setLoading(true);
     axios({
@@ -42,59 +63,75 @@ const SendMessage = ({navigation, route}) => {
       .catch((e) => {
         setLoading(false);
         return ToastAndroid.showWithGravity(
-          e.response.data.message||'some error occoured',
+          e.response.data.message || 'some error occoured',
           ToastAndroid.LONG,
           ToastAndroid.BOTTOM,
         );
       });
   };
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Spinner
         visible={loading}
         textContent={'sending...'}
         textStyle={{color: '#FFF', fontSize: 12, fontFamily: 'Poppins-Medium'}}
       />
       <TouchableOpacity
-        style={{width: '34%', height: 40, justifyContent: 'center'}}
+        style={{width: 0.34 * width, height: 40, justifyContent: 'center'}}
         onPress={() => {
           navigation.goBack();
         }}>
         <Text style={styles.text}>Back</Text>
       </TouchableOpacity>
-      <View style={{width: '80%', marginHorizontal: '10%', marginTop: '20%'}}>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={styles.headerText}>To : </Text>
+      <View style={{width: width * 0.8, marginHorizontal: width * 0.1}}>
+        <View style={{flexDirection: 'row', marginTop: height * 0.1}}>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>
+            To :{' '}
+          </Text>
           <Text
             style={[
               styles.headerText,
-              {color: '#ff9200', fontFamily: 'Poppins-Regular', width: '50%'},
+              {
+                color: '#ff9200',
+                fontFamily: 'Poppins-Regular',
+                width: width * 0.5,
+              },
             ]}>
             {data.firstName + ' ' + data.lastName}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
-          <Text style={styles.headerText}>{''}</Text>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>{''}</Text>
           <Text
             style={[
               styles.headerText,
-              {color: '#ff9200', fontFamily: 'Poppins-Regular', width: '50%'},
+              {
+                color: '#ff9200',
+                fontFamily: 'Poppins-Regular',
+                width: width * 0.5,
+              },
             ]}>
             ({data.phoneNumber})
           </Text>
         </View>
         <View style={{flexDirection: 'row', marginTop: 40}}>
-          <Text style={styles.headerText}>Hi. Your OTP is: </Text>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>
+            Hi. Your OTP is:{' '}
+          </Text>
           <Text
             style={[
               styles.headerText,
-              {color: '#ff9200', fontFamily: 'Poppins-Medium', width: '50%'},
+              {
+                color: '#ff9200',
+                fontFamily: 'Poppins-Medium',
+                width: width * 0.5,
+              },
             ]}>
             {otp}
           </Text>
         </View>
         <TextInput
-          style={styles.search}
+          style={[styles.search, {width: width * 0.86}]}
           placeholder={`Please add additional message`}
           placeholderTextColor="#aaaaaa"
           onChangeText={(text) => {
@@ -105,15 +142,22 @@ const SendMessage = ({navigation, route}) => {
           numberOfLines={3}
           maxLength={100}
         />
-        <Text style={styles.max}>max 100 characters</Text>
+        <Text style={[styles.max, {width: width * 0.86}]}>
+          max 100 characters
+        </Text>
       </View>
-      <View style={styles.bottom}>
-        <TouchableOpacity style={styles.button} onPress={() => Send()}>
+      <View style={[styles.bottom, {width, marginBottom: height * 0.1}]}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {width: width * 0.55, marginVertical: height * 0.05},
+          ]}
+          onPress={() => Send()}>
           <Text style={[styles.text, {color: '#ffffff'}]}>Send Message </Text>
           <Ionicons name="ios-send" color="#ffffff" size={18} />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -124,7 +168,6 @@ const styles = StyleSheet.create({
   },
   bottom: {
     alignItems: 'center',
-    width: '100%',
   },
   search: {
     zIndex: -1,
@@ -136,18 +179,15 @@ const styles = StyleSheet.create({
     borderColor: '#cccccc',
     borderWidth: 0.5,
     marginTop: 12,
-    width: '86%',
   },
   max: {
     color: '#3acce1',
-    width: '86%',
     textAlign: 'right',
     fontSize: 12,
     fontFamily: 'Poppins-Medium',
     marginTop: 2,
   },
   button: {
-    width: '55%',
     backgroundColor: '#ff9200',
     flexDirection: 'row',
     alignItems: 'center',
@@ -157,14 +197,12 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 6,
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 3,
-    marginTop: '15%',
   },
   headerText: {
     marginTop: 2,
     fontSize: 18,
     color: '#444444',
     fontFamily: 'Poppins-Regular',
-    minWidth: '50%',
   },
   text: {
     fontSize: 16,

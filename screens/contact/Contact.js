@@ -8,21 +8,22 @@ import {
   SectionList,
   TouchableOpacity,
   TextInput,
+  ToastAndroid,
 } from 'react-native';
-import axios from '../../utils/axios';
+import axios from '../../utils/axios'; //used for http request to server
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import _ from 'lodash';
+import _ from 'lodash'; //provides utility functions like generate random number
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const window = Dimensions.get('window');
 
 const ContactScreen = ({navigation}) => {
-  const [contacts, setContacts] = useState([]);
-  const [contactlist,setcontactlist]=useState([]);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [flag, setFlag] = useState(false);
-  const [search, setSearch] = useState('');
+  const [contacts, setContacts] = useState([]); //contacts which are to be shown(filterd list)
+  const [contactlist, setcontactlist] = useState([]); //all contacts(to do filtering)
+  const [refreshing, setRefreshing] = useState(false); //pull to refresh facility
+  const [loading, setLoading] = useState(false); //manages loading state on api call
+  const [flag, setFlag] = useState(false); //on refresh useEffect hook called by this flag
+  const [search, setSearch] = useState(''); //search text
 
   const [width, setWidth] = useState(window.width);
   const [height, setHeight] = useState(window.height);
@@ -30,6 +31,7 @@ const ContactScreen = ({navigation}) => {
     setHeight(window.height);
     setWidth(window.width);
   };
+  //Utility function to convert a normal list to alphabatical ordered list
   const getData = (list) => {
     let contactsArr = [];
     let aCode = 'A'.charCodeAt(0);
@@ -53,22 +55,31 @@ const ContactScreen = ({navigation}) => {
   useEffect(() => {
     setLoading(true);
     setRefreshing(false);
+    //Api call for getting all contacts from server
     axios({url: '/user', method: 'GET'})
       .then((res) => res.data)
       .then((data) => {
         setLoading(false);
-        setcontactlist(data)
+        setcontactlist(data);
         setContacts(getData(data));
       })
       .catch((err) => {
-        console.log(err)
         setLoading(false);
+        ToastAndroid.showWithGravity(
+          'Contact fetch error, please check internet connection',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+        );
       });
+
+    //handling screen rotation (ui management)
     Dimensions.addEventListener('change', onChange);
     return () => {
       Dimensions.removeEventListener('change', onChange);
     };
   }, [flag]);
+
+  //Utility function for searced output
   const handleSearch = (text) => {
     const formattedQuery = text.toLowerCase();
     var temp = [];
@@ -123,7 +134,9 @@ const ContactScreen = ({navigation}) => {
             onPress={() => {
               navigation.navigate('User', item);
             }}>
-            <Text style={styles.name}>{item.firstName+" "+item.lastName}</Text>
+            <Text style={styles.name}>
+              {item.firstName + ' ' + item.lastName}
+            </Text>
             {search ? (
               <Text style={[styles.name, {fontSize: 12}]}>
                 {item.phoneNumber}

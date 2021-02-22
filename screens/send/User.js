@@ -1,29 +1,60 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+const window = Dimensions.get('window');
 const UserScreen = ({navigation, route}) => {
-  const [data, setData] = useState(route.params);
+  const [data, setData] = useState(route.params); //user info getting by prop from previous screen
+  const [width, setWidth] = useState(window.width);
+  const [height, setHeight] = useState(window.height);
+  const onChange = ({window}) => {
+    setHeight(window.height);
+    setWidth(window.width);
+  };
+  useEffect(() => {
+    //manages screen rotation listner
+    Dimensions.addEventListener('change', onChange);
+    return () => {
+      Dimensions.removeEventListener('change', onChange);
+    };
+  }, []);
   return (
     <View style={styles.container}>
-      <View style={{width: '80%', marginHorizontal: '10%', marginTop: '20%'}}>
+      <ScrollView
+        style={{width: width * 0.8, marginHorizontal: width * 0.1}}
+        showsVerticalScrollIndicator={false}>
         <Ionicons
           name="person"
           color="#acacac"
           size={60}
-          style={{marginBottom: '20%', alignSelf: 'center'}}
+          style={{marginVertical: height * 0.1, alignSelf: 'center'}}
         />
         <View style={{flexDirection: 'row'}}>
-          <Text style={styles.headerText}>First Name : </Text>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>
+            First Name :{' '}
+          </Text>
           <Text
             style={[
               styles.headerText,
-              {color: '#ff9200', fontFamily: 'Poppins-Medium', width: '50%'},
+              {
+                color: '#ff9200',
+                fontFamily: 'Poppins-Medium',
+                width: width * 0.5,
+              },
             ]}>
             {data.firstName}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
-          <Text style={styles.headerText}>Last Name : </Text>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>
+            Last Name :{' '}
+          </Text>
           <Text
             style={[
               styles.headerText,
@@ -32,8 +63,10 @@ const UserScreen = ({navigation, route}) => {
             {data.lastName}
           </Text>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={styles.headerText}>Phone Number : </Text>
+        <View style={{flexDirection: 'row', marginBottom: 66}}>
+          <Text style={[styles.headerText, {minWidth: width * 0.4}]}>
+            Phone Number :{' '}
+          </Text>
           <Text
             style={[
               styles.headerText,
@@ -42,7 +75,7 @@ const UserScreen = ({navigation, route}) => {
             {data.phoneNumber}
           </Text>
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.bottom}>
         <TouchableOpacity
           style={{width: '46%', height: 60, justifyContent: 'center'}}
@@ -89,7 +122,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#444444',
     fontFamily: 'Poppins-Regular',
-    minWidth: '50%',
   },
   text: {
     fontSize: 16,

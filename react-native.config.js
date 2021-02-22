@@ -1,4 +1,5 @@
 module.exports = {
+  //for loading fonts
     project: {
       ios: {},
       android: {},

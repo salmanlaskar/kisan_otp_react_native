@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, FlatList, RefreshControl} from 'react-native';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux'; //to connect with redux state
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getMessage} from '../../redux'
-const MessageScreen = ({message,getMessage}) => {
+import {getMessage} from '../../redux';
+const MessageScreen = ({message, getMessage}) => {
+  const [refreshing, setRefreshing] = useState(false); //manages pull to refresh state
+  //Utility array to get months from index
   const months = [
     'Jan',
     'Feb',
@@ -18,18 +20,19 @@ const MessageScreen = ({message,getMessage}) => {
     'November',
     'December',
   ];
-  const [refreshing,setRefreshing]=useState(false)
   const renderPost = (post, index) => {
     return (
       <View>
+        {/* here the logic is for showing the header for date, same date's message will together
+        Also maintaining Today or not*/}
         {!index ||
-        new Date(post.receivedMessageTimeStamp).toDateString() !=
+        new Date(post.receivedMessageTimeStamp).toDateString() !==
           new Date(
             message.data[index - 1].receivedMessageTimeStamp,
           ).toDateString() ? (
           <View style={[styles.date, index === 0 ? {paddingTop: 20} : {}]}>
             <Text style={styles.dateText}>
-              {new Date(post.receivedMessageTimeStamp).toDateString() ==
+              {new Date(post.receivedMessageTimeStamp).toDateString() ===
               new Date().toDateString()
                 ? 'Today'
                 : months[
@@ -49,6 +52,7 @@ const MessageScreen = ({message,getMessage}) => {
           <Text style={[styles.mes, {fontSize: 12}]}>({post.phoneNumber})</Text>
           <Text style={styles.mes}>{post.message}</Text>
           <Text style={styles.time}>
+            {/*method to show hour minutes and second */}
             {new Date(post.receivedMessageTimeStamp).toLocaleTimeString(
               'en-US',
               {hour: 'numeric', hour12: true, minute: 'numeric'},
@@ -88,7 +92,7 @@ const MessageScreen = ({message,getMessage}) => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#ffffff',
-    minHeight:'100%'
+    minHeight: '100%',
   },
   date: {
     fontSize: 20,
@@ -134,7 +138,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
-const mapStateToProps = state => ({
-  message: state.message
+const mapStateToProps = (state) => ({
+  message: state.message,
 });
-export default connect(mapStateToProps,{getMessage})(MessageScreen);
+export default connect(mapStateToProps, {getMessage})(MessageScreen);
